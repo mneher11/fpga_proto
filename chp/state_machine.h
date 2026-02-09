@@ -5,6 +5,7 @@
 #include <act/act.h>
 #include <act/passes/booleanize.h>
 #include <act/passes/finline.h>
+#include <act/passes/chpdecomp.h>
 
 #include "data_path.h"
 
