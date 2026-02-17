@@ -295,13 +295,13 @@ Condition *process_recv (
         act_dynamic_var *dv;
         act_connection *var_con = NULL;
         if (var_id) {
-          act_dynamic_var *dv = BOOL->isDynamicRef(bnl, var_id);
+          dv = BOOL->isDynamicRef(bnl, var_id);
           if (dv) {
             var_con = dv->id;
           } else {
             var_id->sPrint(var_id_tmp,1024);
+            var_id_str = var_id_tmp;
           }
-          var_id_str = var_id_tmp;
         }
         d = new CHPData(data_type, proc, tsm, exit_cond,
                                       init_cond, var_id, chan_id);
