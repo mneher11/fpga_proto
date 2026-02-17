@@ -131,6 +131,9 @@ int main (int argc, char **argv) {
 		fatal_error ("Process '%s' is not expanded.", proc);
 	}
 
+	fpga::BOOL = new ActBooleanizePass (fpga::a);
+	Assert (fpga::BOOL->run(p), "Booleanize pass failed");
+
         if (mem_pass) {
            ActCHPMemory *mem = new ActCHPMemory (fpga::a);
            mem->run (p);
@@ -140,8 +143,6 @@ int main (int argc, char **argv) {
 	Assert (fpga::INLINE->run(p), "Function inline pass failed");
 	fpga::INLINE->run(p);
 
-	fpga::BOOL = new ActBooleanizePass (fpga::a);
-	Assert (fpga::BOOL->run(p), "Booleanize pass failed");
 
   fpga::CHPProject *cp;
 
