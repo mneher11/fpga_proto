@@ -1983,14 +1983,20 @@ void declare_vars (Scope *cs, act_boolean_netlist_t *bnl, StateMachine *tsm)
     if (bv->isint == 0 && bv->ischan == 1) {
       if (bv->ischpport == 0) {
         //Instance interconnection
-        if (tsm->GetInstPorts()[con].size() > 1) { type = 2; }
-        else if (tsm->GetInstPorts()[con].size() == 1 && 
-                  tsm->GetInstPorts()[con][0]->GetDir() == 0) { type = 1; }
+        std::set<StateMachineInst *> owners;
+        std::map<act_connection *, std::vector<Port *>> ports = tsm->GetInstPorts();
+        for (auto port : ports[con]) {
+          if (port->GetSMI()) owners.insert(port->GetSMI());
+        }
+        int num_of_owners = owners.size();
+        if (num_of_owners == 1 && ports[con][0]->GetDir() == 0) { type = 1; }
+        else if (num_of_owners == 1 && ports[con][0]->GetDir() == 1) { type = 0; }
+        else if (num_of_owners > 1) { type = 2; }
         else { type = 3; }
       } else {
         type = 1;
       }
-    } 
+    }
     //Integer Type
     else if (bv->isint == 1 && bv->ischan == 0) {
       if (bv->ischpport == 0) {
