@@ -1986,7 +1986,7 @@ void declare_vars (Scope *cs, act_boolean_netlist_t *bnl, StateMachine *tsm)
     }
     int num_of_owners = owners.size();
 
-    if (bv->ischpport == 0 | bv->ischan == 0) {
+    if (bv->ischpport == 0 || bv->ischan == 0) {
       if (num_of_owners == 1 && ports[con][0]->GetDir() == 0) { type = 1; }
       else if (num_of_owners == 1 && ports[con][0]->GetDir() == 1) { type = 0; }
       else if (num_of_owners > 1) { type = 2; }
