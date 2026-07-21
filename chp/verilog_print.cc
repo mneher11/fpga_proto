@@ -37,12 +37,16 @@ void get_module_name (Process *p, std::string &str) {
   int len = strlen(mn);
 
   for (auto i = 0; i < len; i++) {
-    if (mn[i] == 0x3c) {
+    if (mn[i] == '<') {
       continue;
-    } else if (mn[i] == 0x3e) {
+    } else if (mn[i] == '>') {
       continue;
-    } else if (mn[i] == 0x2c) {
-      continue;
+    } else if (mn[i] == ',') {
+      str += "_";
+    } else if (mn[i] == '{') {
+      str += "_";
+    } else if (mn[i] == '}') {
+      str += "_";
     } else {
       str += mn[i];
     }
