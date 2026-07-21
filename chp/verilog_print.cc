@@ -496,15 +496,10 @@ void PrintExpression(Expr *e, StateMachine *scope, std::string &str) {
       break;
     }
     case (E_BITFIELD): {
-      char tmp[1024];
-      ActId *id;
-      Scope *act_scope;
-      act_scope = scope->GetProc()->CurScope();
-      id = (ActId *)e->u.e.l;
-      act_boolean_netlist_t *bnl;
-      bnl = BOOL->getBNL(scope->GetProc());
-      act_dynamic_var_t *dv;
-      dv = BOOL->isDynamicRef(bnl, id);
+      if (e->u.e.l->type != E_VAR) {
+	str += "( ( (";
+      }
+      PrintExpression (e->u.e.l, scope, str);
       unsigned int l;
       unsigned int r;
       l = e->u.e.r->u.e.r->u.ival.v;
@@ -513,17 +508,23 @@ void PrintExpression(Expr *e, StateMachine *scope, std::string &str) {
       } else {
         r = l;
       }
-      str += "\\";
-      if (!dv) {
-        id->Canonical(act_scope)->toid()->sPrint(tmp, 1024);
-        str += tmp;
-      } else {
-        print_array_ref(id, scope, str);
+      if (e->u.e.l->type != E_VAR) {
+	str += ") ";
+	if (r != 0) {
+	  str += ">> " + std::to_string (r);
+	}
+	str += ") & " + std::to_string (l - r + 1) + "'b";
+	for (int i=0; i < l - r + 1; i++) {
+	  str += "1";
+	}
+	str += ")";
       }
-      if (l!=r) {
-        str = str + " [" + std::to_string(l) + ":" + std::to_string(r) + "]";
-      } else {
-        str = str + " [" + std::to_string(r) + "]";
+      else {
+	if (l!=r) {
+	  str = str + " [" + std::to_string(l) + ":" + std::to_string(r) + "]";
+	} else {
+	  str = str + " [" + std::to_string(r) + "]";
+	}
       }
       break;
     }
