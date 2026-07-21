@@ -2155,7 +2155,8 @@ void get_full_id (act_boolean_netlist_t *bnl, InstType *it, ActId *id,
   }
 
   if (TypeFactory::isBoolType(it) || 
-      TypeFactory::isIntType(it)) {
+      TypeFactory::isIntType(it) ||
+      TypeFactory::isEnum(it)) {
     if (it->arrayInfo()) {
       Arraystep *as = it->arrayInfo()->stepper();
       while (!as->isend()) {

@@ -1682,16 +1682,16 @@ void StateMachine::PrintAsGlue(std::string &ch_name) {
   return;
 }
 
-void CHPProject::PrintVerilog(int sv, std::string &path) {
+void CHPProject::PrintVerilog(int sv, std::filesystem::path &path) {
 
-  std::string mod_path;
-  mod_path = path + "/func.v";
+  std::filesystem::path mod_path;
+  mod_path = path / "func.v";
   func_file = fopen(mod_path.c_str(), "w");
   for (auto n = hd; n; n = n->GetNext()) {
     if (n->GetPrs() == 1) { continue; }
     std::string mod_name;
     get_module_name(n->GetProc(),mod_name);
-    mod_path = path + "/" + mod_name + ".v";
+    mod_path = path / (mod_name + ".v");
     output_file = fopen(mod_path.c_str(),"w");
     if (!n->GetPar()) {
       n->PrintVerilogHeader(sv);
@@ -1708,13 +1708,11 @@ void CHPProject::PrintVerilog(int sv, std::string &path) {
     get_chan_name(n->GetChan(),ch_name);
     if (n->GetDir() == 0) { ch_name += "_out"; }
     if (n->GetDir() == 1) { ch_name += "_in"; }
-    std::string ch_path = path + "/" + ch_name + ".v";
+    std::filesystem::path ch_path = path / (ch_name + ".v");
     output_file = fopen(ch_path.c_str(),"w");
     n->PrintAsGlue(ch_name);
     fclose(output_file);
   }
-
-
   return;  
 }
 

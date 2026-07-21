@@ -52,7 +52,8 @@ int main (int argc, char **argv) {
   Act::Init(&argc, &argv);
 
   char *conf = NULL;
-  std::string out_path = std::filesystem::current_path();
+  //std::string out_path = std::filesystem::current_path();
+  std::filesystem::path out_path = std::filesystem::current_path();
 
   int key = 0;
 
@@ -73,8 +74,14 @@ int main (int argc, char **argv) {
           printf("ERROR: MISSING OUTPUT FOLDER NAME\n");
           exit(1);
         } else {
-          if (std::filesystem::is_directory(optarg)) {
-            out_path = std::string(std::filesystem::current_path()) + "/" + optarg;
+	  std::filesystem::path arg (optarg);
+          if (std::filesystem::is_directory(arg)) {
+            if (arg.is_absolute()) {
+	      out_path = optarg;
+            }
+            else {
+	      out_path = std::filesystem::current_path() / arg;
+            }
           } else {
             printf("ERROR: FOLDER DOES NOT EXIST\n");
             exit(1);
@@ -128,7 +135,7 @@ int main (int argc, char **argv) {
 	}
 
 	if (!p->isExpanded()){
-		fatal_error ("Process '%s' is not expanded.", proc);
+                p = p->Expand (ActNamespace::Global(), p->CurScope(), 0, NULL);
 	}
 
 	fpga::BOOL = new ActBooleanizePass (fpga::a);
@@ -150,7 +157,7 @@ int main (int argc, char **argv) {
   
   if (parb == 1) {
     FILE *arb_file;
-    std::string arb_path = std::string(out_path) + "/arbiter.v";
+    std::filesystem::path arb_path = out_path / std::filesystem::path ("arbiter.v");
     arb_file = fopen(arb_path.c_str(), "w");
 	  fpga::Arbiter *arb = new fpga::Arbiter();
 	  arb->PrintArbiter(arb_file);

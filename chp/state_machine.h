@@ -6,6 +6,7 @@
 #include <act/passes/booleanize.h>
 #include <act/passes/finline.h>
 #include <act/passes/chpdecomp.h>
+#include <filesystem>
 
 #include "data_path.h"
 
@@ -362,7 +363,7 @@ public:
   void AppendGlue(StateMachine *sm);
 
   void PrintPlain();
-  void PrintVerilog(int , std::string&);
+  void PrintVerilog(int , std::filesystem::path&);
 
   StateMachine *Head();
   StateMachine *Next();
