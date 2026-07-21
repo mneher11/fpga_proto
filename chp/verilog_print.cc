@@ -452,7 +452,12 @@ void PrintExpression(Expr *e, StateMachine *scope, std::string &str) {
           while (sm->GetPar()) { sm = sm->GetPar(); }
         }
         str += "\\";
-        id->sPrint(tmp,1024);
+	{
+	  // need the canonical name
+	  ActId *tid = cc->toid();
+	  tid->sPrint (tmp, 1024);
+	  delete tid;
+	}
         str += tmp;
         if (sm) {
           if (sm->IsPort(cc) == 1) {
