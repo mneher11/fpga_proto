@@ -1228,14 +1228,22 @@ void StateMachine::PrintVerilogData() {
 
   for (auto id : test_dyn_data) {
  
-    if (id.second[0]->GetType() == 2 || id.second[0]->GetType() == 7) {
+    bool comb = (id.second[0]->GetType() == 2 || id.second[0]->GetType() == 7);
+
+    if (comb) {
       da += "always @(*)\n";
     } else {
-      da += "always @(posedge \\clock )\n";
+      // the independent ifs below are several statements, so the block
+      // needs an explicit begin/end
+      da += "always @(posedge \\clock ) begin\n";
     }
 
     for (auto dd : id.second) {
-      if (ef == 0) {
+      // clocked blocks emit independent ifs, one per array element,
+      // combinational blocks emit an if/else-if chain
+      if (!comb) {
+        da += "if (";
+      } else if (ef == 0) {
         da += "if (";
         ef = 1;
       } else {
@@ -1254,6 +1262,9 @@ void StateMachine::PrintVerilogData() {
           da += "else begin\n";
           id.second[0]->PrintVerilogRHS(da);
           da += "end\n";
+        }
+        if (!comb) {
+          da += "end\n";   // close the always block opened above
         }
         ef = 0;
       }
