@@ -1808,7 +1808,9 @@ arb += "wire\t[2**W-1:0]\treq_masked;\n";
 arb += "\n";
 arb += "always @(posedge \\clock )\n";
 arb += "if (reset) mask <= 0;\n";
-arb += "else       mask <= th_gnt; \n";
+// Drop the winning bit so the next round admits only the strictly
+// lower indices and the rotation advances
+arb += "else       mask <= th_gnt & ~gnt;\n";
 arb += "\n";
 arb += "assign req_masked = req & mask;\n";
 arb += "\n";
